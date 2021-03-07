@@ -82,9 +82,20 @@ function pelea(c1,c2){
         case Piedra: return 1;
         }
     }
-    
-    console.log("me meurroooo")
 }
+
+function memoriza(f){
+    let memo = [];
+    return function(x){
+        if( typeof memo[x] == "undefined" ){
+            let ret = f(x);
+            memo[x] = ret;
+        }
+        return memo[x];
+    }
+}
+
+const sqrt = memoriza(Math.sqrt);
 
 
 class CampoDeBatalla{
@@ -99,7 +110,7 @@ class CampoDeBatalla{
     }
 
     azar(puntos){
-        for(let i = 0 ; i <= 500 ; i++ ){
+        for(let i = 0 ; i <= puntos ; i++ ){
             const x = Math.floor( Math.random()*this.ancho);
             const y = Math.floor( Math.random()*this.alto);
             this.setCelda(x,y,i%6);
@@ -163,17 +174,13 @@ class CampoDeBatalla{
         return ret;
     }
 
-    
+   
     evolucionaCelda(columna,fila,opciones){
-
-        
         const radioLucha =  opciones.radioLucha || 2;
         const radioEmpate = opciones.radioEmpate || 2;
         const fGanado =  opciones.victoria || 1;
         const fPerdido =  opciones.derrota || 1;
         const fEmpatado =  opciones.empate || 0.5;
-
-
         
         const c1 = this.celda(columna,fila);
         let perdidas = [];
@@ -187,7 +194,7 @@ class CampoDeBatalla{
                 if( c == 0 && f == 0 ){
                     continue;
                 }
-                const distancia = Math.sqrt(c*c + f*f);
+                const distancia = sqrt(c*c + f*f);
                 if( distancia > radio ){
                     continue;
                 }
@@ -460,9 +467,9 @@ class OpcionesCampoBatalla{
         
         this.creaRango(grid,"Radio de lucha", 1, 1, 10, this._radioLucha, (v)=> this._radioLucha = v );
         this.creaRango(grid,"Radio de empate", 1, 1, 10, this._radioEmpate, (v)=> this._radioEmpate = v );
-        this.creaRango(grid,"Victoria", 0.1, -10, 10, this._victoria,  (v)=> this._victoria = v );
-        this.creaRango(grid,"Derrota", 0.1, -10, 10, this._derrota,  (v)=> this._derrota = v );
-        this.creaRango(grid,"Empate", 0.1, -10, 10, this._empate,  (v)=> this._empate = v );
+        this.creaRango(grid,"Puntos por victoria", 0.1, -10, 10, this._victoria,  (v)=> this._victoria = v );
+        this.creaRango(grid,"Puntos por derrota", 0.1, -10, 10, this._derrota,  (v)=> this._derrota = v );
+        this.creaRango(grid,"Puntos por empate", 0.1, -10, 10, this._empate,  (v)=> this._empate = v );
     }
 
     create(tag, attrs){
